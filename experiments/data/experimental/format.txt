@@ -1,0 +1,36 @@
+Exxx numbers indicate beginnings of steps in the behavioural task.
+For example, reaction periods were obtained from the difference between E35 and E45.
+
+Task			type of task (2 for decision making task)
+Typ of Try		not documented
+FT/ST			0: habitual condition, 1: novelty condition
+Begin launch	internal clock from starting windows
+Num Try			number of try in each block
+Num CibleA		ID of target that is assigned for CibleA
+Num CibleB		ID of target that is assigned for CibleB
+Pos CibleA		location of CibleA to display (0: right, 1: top, 2: left and 3: bottom)
+Pos CibleB		location of CibleB to display
+%RecA_>_B		not sure (maybe 0: rewarding probability for CibleA is higher than that for cibleB)
+Target choice	chosen target (CibleA or CibleB)
+Good choice		0: choose worse target, 1: choose better target
+Reward			0: not delivered, 1: delivered
+Num error		type of error (251-256)
+
+Error codes:
+------------
+
+E0      beginning of session
+E15     display center target
+E25     beginning of pushing center button
+E35     display two targets
+E45     leave hand from center button
+E55     begging of pushing peripheral target button
+E105    reward delivery timing for better target (recorded even if reward was not delivered)
+E115    reward delivery timing for worse target (save as E105)
+E200    beginning of interval
+E251    pushing wrong peripheral button where targets are not shown
+E252    moving hand from peripheral button before the reward delivery timing
+E253    do not push peripheral button
+E254    do not move from center button after targets display
+E255    moving hand from center button before targets display
+E256    moving hand from peripheral button between beginning and end of delivery

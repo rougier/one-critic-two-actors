@@ -1,5 +1,6 @@
 # Generated data
-data
+# data
+*.pdf
 
 # Emacs backup file
 *~

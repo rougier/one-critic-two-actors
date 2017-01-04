@@ -16,6 +16,7 @@ from task import Task
 from model import Model
 
 
+
 class Experiment(object):
     def __init__(self, model, task, result, report,
                        n_session, n_block, seed=None):
@@ -48,7 +49,7 @@ class Experiment(object):
         if os.path.exists(self.result_file) and not force:
             print("Reading report (%s)" % self.report_file)
             self.read_report()
-            
+
         print("-"*30)
         print("Seed:     %d" % self.seed)
         print("Model:    %s" % self.model_file)
@@ -58,14 +59,16 @@ class Experiment(object):
         n = self.n_session * self.n_block * self.n_trial
         print("Sessions: %d (%d trials)" % (self.n_session, n))
         print("-"*30)
-                
+
         if not os.path.exists(self.result_file) or force:
             index = 0
             records = np.zeros((self.n_session, self.n_block, self.n_trial),
                                dtype=self.task.records.dtype)
-            pool = Pool(4)
-            for result in tqdm(pool.imap_unordered(session, [self,]*self.n_session),
-                               total=self.n_session, leave=True, desc=desc, unit="session",):
+            pool = Pool()
+            for result in tqdm(pool.imap_unordered(session,
+                                                   [self, ]*self.n_session),
+                               total=self.n_session, leave=True, desc=desc,
+                               unit="session",):
                 records[index] = result
                 index += 1
             pool.close()

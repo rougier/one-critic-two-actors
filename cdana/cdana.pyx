@@ -21,7 +21,8 @@ cdef class Function:
 cdef class Identity(Function):
 
     cdef double call(self, double x) except *:
-        if x < 0.0: return 0.0
+        if x < 0.0:
+            return 0.0
         return x
 
 
@@ -34,8 +35,10 @@ cdef class Clamp(Function):
         self.max = max
 
     cdef double call(self, double x) except *:
-        if x < self.min: return self.min
-        if x > self.max: return self.max
+        if x < self.min:
+            return self.min
+        if x > self.max:
+            return self.max
         return x
 
 
@@ -64,7 +67,6 @@ cdef class Sigmoid(Function):
         return self.Vmin + (self.Vmax-self.Vmin)/(1.0+exp((self.Vh-V)/self.Vc))
 
 
-
 # ------------------------------------------------------------------- Group ---
 # Python group type (dtype)
 dtype = [("V",  float),
@@ -83,16 +85,17 @@ cdef packed struct ctype:
 cdef class Group:
     """  """
 
-    cdef double      _tau
-    cdef double      _rest
-    cdef double      _noise
-    cdef double      _delta
-    cdef ctype[:]    _units
-    cdef Function    _activation
-    cdef int         _history_index
-    cdef double[:,:] _history
+    cdef double       _tau
+    cdef double       _rest
+    cdef double       _noise
+    cdef double       _delta
+    cdef ctype[:]     _units
+    cdef Function     _activation
+    cdef int          _history_index
+    cdef double[:, :] _history
 
-    def __init__(self, shape, tau=0.01, rest=0.0, noise=0.0, activation = Identity()):
+    def __init__(self, shape, tau=0.01, rest=0.0,
+                 noise=0.0, activation=Identity()):
         self._tau = tau
         self._rest = rest
         self._noise = noise
@@ -109,7 +112,9 @@ cdef class Group:
             return np.asarray(self._history)
 
     property delta:
-        """ Difference of activity between the first two maximum activites """
+        """
+        Difference of activity between the first two maximum activities
+        """
         def __get__(self):
             return self._delta
 
@@ -117,6 +122,7 @@ cdef class Group:
         """ Membrane time constant """
         def __get__(self):
             return self._tau
+
         def __set__(self, value):
             self._tau = value
 
@@ -124,6 +130,7 @@ cdef class Group:
         """ Noise level """
         def __get__(self):
             return self._noise
+
         def __set__(self, value):
             self._noise = value
 
@@ -131,6 +138,7 @@ cdef class Group:
         """ Membrane resting potential """
         def __get__(self):
             return self._rest
+
         def __set__(self, value):
             self._rest = value
 
@@ -153,6 +161,7 @@ cdef class Group:
         """ Input current from external sources """
         def __get__(self):
             return np.asarray(self._units)["Iext"]
+
         def __set__(self, value):
             np.asarray(self._units)["Iext"] = value
 
@@ -162,31 +171,32 @@ cdef class Group:
         cdef int i
         cdef noise
         cdef ctype * unit
-        cdef double max1=0, max2=0
-            
+        cdef double max1 = 0, max2 = 0
+
         for i in range(len(self._units)):
             unit = & self._units[i]
 
             # Compute white noise
-            noise = self._noise*(rand()/float(RAND_MAX) - 0.5) 
+            noise = self._noise*(rand()/float(RAND_MAX) - 0.5)
 
             # Update membrane potential
-            unit.U += dt/self._tau*(-unit.U + unit.Isyn + unit.Iext - self._rest )
-            
+            unit.U += dt/self._tau*(-unit.U+unit.Isyn+unit.Iext-self._rest)
+
             # Update firing rate
-            unit.V = self._activation.call(unit.U *(1 + noise))
-            
+            unit.V = self._activation.call(unit.U * (1+noise))
+
             # Store firing rate activity
-            self._history[self._history_index,i] = unit.V
+            self._history[self._history_index, i] = unit.V
 
             # Here we record the max activities to store their difference
             # This is used later to decide if a motor decision has been made
-            if unit.V > max1:   max1 = unit.V
-            elif unit.V > max2: max2 = unit.V
+            if unit.V > max1:
+                max1 = unit.V
+            elif unit.V > max2:
+                max2 = unit.V
 
         self._delta = max1 - max2
-        self._history_index +=1
-
+        self._history_index += 1
 
     def flush(self):
         """ Flush all activities and reset history index """
@@ -199,16 +209,11 @@ cdef class Group:
             self._units[i].Isyn = 0
             self._units[i].Iext = 0
 
-
     def __getitem__(self, key):
         return np.asarray(self._units)[key]
 
-
     def __setitem__(self, key, value):
         np.asarray(self._units)[key] = value
-
-
-
 
 
 # ------------------------------------------------------------- Connections ---
@@ -233,6 +238,7 @@ cdef class Connection:
         """Gain of the connection"""
         def __get__(self):
             return self._gain
+
         def __set__(self, value):
             self._gain = value
 
@@ -250,6 +256,7 @@ cdef class Connection:
         """Weights matrix (numpy array)"""
         def __get__(self):
             return np.asarray(self._weights)
+
         def __set__(self, weights):
             self._weights = weights
 
@@ -265,7 +272,7 @@ cdef class OneToOne(Connection):
 # --- OneToAll ---
 cdef class OneToAll(Connection):
     def propagate(self):
-        cdef int i,j
+        cdef int i, j
         for i in range(4):
             v = self._source[i] * self._weights[i] * self._gain
             for j in range(4):
@@ -274,7 +281,7 @@ cdef class OneToAll(Connection):
 # --- AssToMot ---
 cdef class AssToMot(Connection):
     def propagate(self):
-        cdef int i,j
+        cdef int i, j
         for i in range(4):
             v = 0
             for j in range(4):
@@ -284,7 +291,7 @@ cdef class AssToMot(Connection):
 # --- AssToCog ---
 cdef class AssToCog(Connection):
     def propagate(self):
-        cdef int i,j
+        cdef int i, j
         for i in range(4):
             v = 0
             for j in range(4):
@@ -295,7 +302,7 @@ cdef class AssToCog(Connection):
 # --- MotToAss ---
 cdef class MotToAss(Connection):
     def propagate(self):
-        cdef int i,j
+        cdef int i, j
         cdef double v
         for i in range(4):
             v = self._source[i] * self._weights[i] * self._gain
@@ -305,7 +312,7 @@ cdef class MotToAss(Connection):
 # --- CogToAss ---
 cdef class CogToAss(Connection):
     def propagate(self):
-        cdef int i,j
+        cdef int i, j
         cdef double v
         for i in range(4):
             v = self._source[i] * self._weights[i] * self._gain
@@ -316,10 +323,10 @@ cdef class CogToAss(Connection):
 # --- AllToAll ---
 cdef class AllToAll(Connection):
     def propagate(self):
-        cdef int i,j
+        cdef int i, j
         cdef int s_size = self._source.shape[0]
         cdef int t_size = self._target.shape[0]
-        
+
         for i in range(t_size):
             v = 0
             for j in range(s_size):

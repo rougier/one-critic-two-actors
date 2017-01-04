@@ -3,7 +3,10 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
+from data.stats import stats
 from experiment import Experiment
+from data.theoretical.data import get
+
 
 def session(exp):
     exp.model.setup()
@@ -11,8 +14,6 @@ def session(exp):
                        dtype=exp.task.records.dtype)
 
     # Day 1 : GPi ON
-    g1 = exp.model["GPi:cog → THL:cog"].gain
-    g2 = exp.model["GPi:mot → THL:mot"].gain
     for trial in exp.task:
         exp.model.process(exp.task, trial, model=exp.model)
     records[0] = exp.task.records
@@ -26,10 +27,27 @@ def session(exp):
 
     return records
 
+
 experiment = Experiment(model="model.json", task="task.json",
                         result="data/theoretical/D1-on-D2-off.npy",
                         report="data/theoretical/D1-on-D2-off.txt",
-                        n_session=12, n_block=2, seed=373)
+                        n_session=12, n_block=2, seed=46)
 records = experiment.run(session, "D1-on-D2-off")
 
 
+n = 10
+# Get all data on day 0 where gpi is active
+D1 = get('10', day=0, gpi=1, n_trial=60, key='success')
+# Get all data on day 1 where gpi is inactive
+D2 = get('10', day=1, gpi=0, n_trial=60, key='success')
+
+D1_start = [np.mean(session[:n]) for session in D1]
+D1_end = [np.mean(session[-n:]) for session in D1]
+D2_start = [np.mean(session[:n]) for session in D2]
+D2_end = [np.mean(session[-n:]) for session in D2]
+
+print("D1 start: %.3f  ±%.3f (std)  ±%.3f (sem)" % stats(D1_start))
+print("D1 end:   %.3f  ±%.3f (std)  ±%.3f (sem)" % stats(D1_end))
+print("D2 start: %.3f  ±%.3f (std)  ±%.3f (sem)" % stats(D2_start))
+print("D2 end:   %.3f  ±%.3f (std)  ±%.3f (sem)" % stats(D2_end))
+print()

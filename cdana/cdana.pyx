@@ -67,6 +67,7 @@ cdef class Sigmoid(Function):
         return self.Vmin + (self.Vmax-self.Vmin)/(1.0+exp((self.Vh-V)/self.Vc))
 
 
+
 # ------------------------------------------------------------------- Group ---
 # Python group type (dtype)
 dtype = [("V",  float),

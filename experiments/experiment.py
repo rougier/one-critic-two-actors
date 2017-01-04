@@ -19,7 +19,7 @@ from model import Model
 
 class Experiment(object):
     def __init__(self, model, task, result, report,
-                       n_session, n_block, seed=None):
+                 n_session, n_block, seed=None):
         self.model_file  = model
         self.task_file   = task
         self.result_file = result
@@ -30,7 +30,8 @@ class Experiment(object):
 
         if self.seed is None:
             self.seed = random.randint(0,1000)
-        np.random.seed(seed), random.seed(seed)
+        np.random.seed(self.seed)
+        random.seed(self.seed)
 
         self.model = Model(self.model_file)
         self.task  = Task(self.task_file)
@@ -64,14 +65,19 @@ class Experiment(object):
             index = 0
             records = np.zeros((self.n_session, self.n_block, self.n_trial),
                                dtype=self.task.records.dtype)
-            pool = Pool()
-            for result in tqdm(pool.imap_unordered(session,
-                                                   [self, ]*self.n_session),
-                               total=self.n_session, leave=True, desc=desc,
-                               unit="session",):
+            # pool = Pool()
+            # for result in tqdm(pool.imap_unordered(session,
+            #                                        [self, ]*self.n_session),
+            #                    total=self.n_session, leave=True, desc=desc,
+            #                    unit="session",):
+            #     records[index] = result
+            #     index += 1
+            # pool.close()
+            for i in tqdm(range(self.n_session), total=self.n_session,
+                          leave=True, desc=desc, unit="session"):
+                result = session(self)
                 records[index] = result
                 index += 1
-            pool.close()
 
             if save:
                 print("Saving results (%s)" % self.result_file)

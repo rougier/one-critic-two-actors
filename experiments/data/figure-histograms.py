@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import lines
 import matplotlib.pyplot as plt
 
-def histogram(ax, D0, D1, D2, title, labels):
+def histogram(ax, D0, D1, D2, title, labels, stars):
     n = 10
     
     D0_start = [np.mean(session[:n]) for session in D0]
@@ -84,20 +84,28 @@ def histogram(ax, D0, D1, D2, title, labels):
 
     label_diff(-0.5, D0_start_mean+D0_start_sem+.05,
                4.5, D2_start_mean+D2_start_sem+.25,
-               1.1, '***')
+               1.1, stars[0])
     label_diff(2.0, D1_start_mean+D1_start_sem+.05,
                4.5, D2_start_mean+D2_start_sem+.15,
-               1.0, '***')
+               1.0, stars[1])
     label_diff(3.0, D1_end_mean+D1_end_sem+.05,
                4.5, D2_start_mean+D2_start_sem+.05,
-               0.9, '***')
+               0.9, stars[2])
 
     plt.title(title)
 
-
+import scipy.stats
 from stats import stats
 from experimental.data import get as get_experimental
 from theoretical.data import get as get_theoretical
+
+def test(group1, group2):
+    F, p = scipy.stats.kruskal(group1, group2)
+    if   p < 0.0005: return "***", F, p
+    elif p < 0.005:  return " **", F, p
+    elif p < 0.05:   return "  *", F, p
+    else:            return "  -", F, p
+
 
 fig = plt.figure(figsize=(12, 5), facecolor="w")
 
@@ -105,15 +113,37 @@ D0 = get_experimental('10', day=0, gpi=1, n_trial=60, key='success')
 D1 = get_experimental('01', day=0, gpi=0, n_trial=60, key='success')
 D2 = get_experimental('01', day=1, gpi=1, n_trial=60, key='success')
 ax = plt.subplot(1, 2, 2)
+
+Z = np.loadtxt("./experimental-raw-data.txt")
+C0 = Z[np.where(Z[:,2]==0)][:,0]
+C2 = Z[np.where(Z[:,2]==2)][:,0]
+C3 = Z[np.where(Z[:,2]==3)][:,0]
+C4 = Z[np.where(Z[:,2]==4)][:,0]
+stars = [result[0] for result in [test(C4, C0),
+                                  test(C4, C2),
+                                  test(C4, C3)]]
+
 histogram(ax, D0, D1, D2, "Experimental results",
-          ("Control", "D1 (muscimol)", " D2 (saline)"))
+          labels = ("Control", "D1 (muscimol)", " D2 (saline)"),
+          stars = stars)
 
 D0 = get_theoretical('10', day=0, gpi=1, n_trial=60, key='success')
 D1 = get_theoretical('01', day=0, gpi=0, n_trial=60, key='success')
 D2 = get_theoretical('01', day=1, gpi=1, n_trial=60, key='success')
 ax = plt.subplot(1, 2, 1)
+
+Z = np.loadtxt("./theoretical-raw-data.txt")
+C0 = Z[np.where(Z[:,2]==0)][:,0]
+C2 = Z[np.where(Z[:,2]==2)][:,0]
+C3 = Z[np.where(Z[:,2]==3)][:,0]
+C4 = Z[np.where(Z[:,2]==4)][:,0]
+stars = [result[0] for result in [test(C4, C0),
+                                  test(C4, C2),
+                                  test(C4, C3)]]
 histogram(ax, D0, D1, D2, "Theoretical results",
-          ("Control", "D1 (GPi OFF)", " D2 (GPi ON)"))
+          labels = ("Control", "D1 (GPi OFF)", " D2 (GPi ON)"),
+          stars = stars)
+
 plt.tight_layout(pad=0)
 plt.savefig("histogram.pdf")
 plt.show()

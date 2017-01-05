@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# Copyright (c) 2016, Nicolas P. Rougier
+# Distributed under the (new) BSD License.
+# -----------------------------------------------------------------------------
 import sys
 import numpy as np
 from stats import stats

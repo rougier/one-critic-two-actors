@@ -102,9 +102,9 @@ from theoretical.data import get as get_theoretical
 def test(group1, group2):
     F, p = scipy.stats.kruskal(group1, group2)
     if   p < 0.0005: return "***", F, p
-    elif p < 0.005:  return " **", F, p
-    elif p < 0.05:   return "  *", F, p
-    else:            return "  -", F, p
+    elif p < 0.005:  return "**", F, p
+    elif p < 0.05:   return "*", F, p
+    else:            return "-", F, p
 
 
 fig = plt.figure(figsize=(12, 5), facecolor="w")

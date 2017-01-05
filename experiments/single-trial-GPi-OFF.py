@@ -12,8 +12,8 @@ seed = random.randint(0,1000)
 np.random.seed(seed)
 random.seed(seed)
 
-model = Model("model-topalidou.json")
-task  = Task("task-guthrie.json")
+model = Model("model.json")
+task  = Task("task.json")
 
 print("-"*30)
 print("Seed:     %d" % seed)

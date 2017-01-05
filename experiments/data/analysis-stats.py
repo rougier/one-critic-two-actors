@@ -12,22 +12,28 @@ import scipy.stats
 # which of the groups differs. Post-hoc comparisons between groups are required
 # to determine which groups are different.
 
+
 def test(group1, group2):
     F, p = scipy.stats.kruskal(group1, group2)
-    if   p < 0.0005: return "***", F, p
-    elif p < 0.005:  return " **", F, p
-    elif p < 0.05:   return "  *", F, p
-    else:            return "  -", F, p
+    if p < 0.0005:
+        return "***", F, p
+    elif p < 0.005:
+        return " **", F, p
+    elif p < 0.05:
+        return "  *", F, p
+    else:
+        return "  -", F, p
+
 
 print("Kruskal-Wallis H-test with the null hypothesis that the\n"
       "population median of all of the conditions are equal")
 print("(*: p < 0.05     **: p < 0.005     ***: p< 0.0005)\n")
 
 Z = np.loadtxt("./theoretical-raw-data.txt")
-C0 = Z[np.where(Z[:,2]==0)][:,0]
-C2 = Z[np.where(Z[:,2]==2)][:,0]
-C3 = Z[np.where(Z[:,2]==3)][:,0]
-C4 = Z[np.where(Z[:,2]==4)][:,0]
+C0 = Z[np.where(Z[:, 2] == 0)][:, 0]
+C2 = Z[np.where(Z[:, 2] == 2)][:, 0]
+C3 = Z[np.where(Z[:, 2] == 3)][:, 0]
+C4 = Z[np.where(Z[:, 2] == 4)][:, 0]
 
 print("Theoretical results")
 print("-------------------")
@@ -37,10 +43,10 @@ print("C4 / C2 : %s (F = %g, p = %g)" % test(C4, C3))
 print()
 
 Z = np.loadtxt("./experimental-raw-data.txt")
-C0 = Z[np.where(Z[:,2]==0)][:,0]
-C2 = Z[np.where(Z[:,2]==2)][:,0]
-C3 = Z[np.where(Z[:,2]==3)][:,0]
-C4 = Z[np.where(Z[:,2]==4)][:,0]
+C0 = Z[np.where(Z[:, 2] == 0)][:, 0]
+C2 = Z[np.where(Z[:, 2] == 2)][:, 0]
+C3 = Z[np.where(Z[:, 2] == 3)][:, 0]
+C4 = Z[np.where(Z[:, 2] == 4)][:, 0]
 
 print("Experimental results")
 print("--------------------")

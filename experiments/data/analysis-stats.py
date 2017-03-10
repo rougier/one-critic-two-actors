@@ -14,15 +14,15 @@ import scipy.stats
 
 
 def test(group1, group2):
-    F, p = scipy.stats.kruskal(group1, group2)
+    H, p = scipy.stats.kruskal(group1, group2)
     if p < 0.0005:
-        return "***", F, p
+        return "***", H, p
     elif p < 0.005:
-        return " **", F, p
+        return " **", H, p
     elif p < 0.05:
-        return "  *", F, p
+        return "  *", H, p
     else:
-        return "  -", F, p
+        return "  -", H, p
 
 
 print("Kruskal-Wallis H-test with the null hypothesis that the\n"
@@ -37,9 +37,9 @@ C4 = Z[np.where(Z[:, 2] == 4)][:, 0]
 
 print("Theoretical results")
 print("-------------------")
-print("C4 / C0 : %s (F = %g, p = %g)" % test(C4, C0))
-print("C4 / C2 : %s (F = %g, p = %g)" % test(C4, C2))
-print("C4 / C2 : %s (F = %g, p = %g)" % test(C4, C3))
+print("C4 / C0 : %s (H = %g, p = %g)" % test(C4, C0))
+print("C4 / C2 : %s (H = %g, p = %g)" % test(C4, C2))
+print("C4 / C2 : %s (H = %g, p = %g)" % test(C4, C3))
 print()
 
 Z = np.loadtxt("./experimental-raw-data.txt")
@@ -50,7 +50,7 @@ C4 = Z[np.where(Z[:, 2] == 4)][:, 0]
 
 print("Experimental results")
 print("--------------------")
-print("C4 / C0 : %s (F = %g, p = %g)" % test(C4, C0))
-print("C4 / C2 : %s (F = %g, p = %g)" % test(C4, C2))
-print("C4 / C2 : %s (F = %g, p = %g)" % test(C4, C3))
+print("C4 / C0 : %s (H = %g, p = %g)" % test(C4, C0))
+print("C4 / C2 : %s (H = %g, p = %g)" % test(C4, C2))
+print("C4 / C2 : %s (H = %g, p = %g)" % test(C4, C3))
 print()

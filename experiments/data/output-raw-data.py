@@ -21,23 +21,31 @@ def write_data(get, filename):
     file.write("# Date: %s\n" % time.asctime())
     file.write("# Author: Nicolas P. Rougier <Nicolas.Rougier@inria.fr>\n")
     file.write("# Fields: performance\tsession_id\tcondition\n")
+    file.write("# condition = 0: Control / Saline / 10 firsts\n")
+    file.write("# condition = 1: Control / Saline / 10 lasts\n")
+    file.write("# condition = 2: Day 1 / Muscimol / 10 firsts\n")
+    file.write("# condition = 3: Day 1 / Muscimol / 10 lasts\n")
+    file.write("# condition = 4: Day 2 / Saline / 10 firsts\n")
+    file.write("# condition = 5: Day 2 / Saline / 10 lasts\n")
+
+    
     for session_id, session in enumerate(D0):
         for trial in session[:n]:
-            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_0))
+            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_0))
         for trial in session[-n:]:
-            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_1))
+            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_1))
 
     for session_id, session in enumerate(D1):
         for trial in session[:n]:
-            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_2))
+            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_2))
         for trial in session[-n:]:
-            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_3))
+            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_3))
 
     for session_id, session in enumerate(D2):
         for trial in session[:n]:
-            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_4))
+            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_4))
         for trial in session[-n:]:
-            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_5))
+            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_5))
     file.close()
 
 write_data(get_theoretical, "theoretical-raw-data.txt")

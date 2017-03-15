@@ -66,16 +66,16 @@ def plot_mean_performance(ax, sessions):
     text = ax.text(X[-1]+0.1, M[-1], "%.2f" % M[-1], fontsize=10,
                    ha='left', va='center', transform=ax.transData)
     # text.set_bbox(dict(facecolor='white', edgecolor='None', alpha=0.65))
-    ax.plot(X, M+SEM, linewidth=.5, linestyle='-', color='.75')
-    ax.plot(X, M-SEM, linewidth=.5, linestyle='-', color='.75')
-    ax.fill_between(X, M+SEM, M-SEM, color='k', alpha=0.05)
+    ax.plot(X, M+STD, linewidth=.5, linestyle='-', color='.75')
+    ax.plot(X, M-STD, linewidth=.5, linestyle='-', color='.75')
+    ax.fill_between(X, M+STD, M-STD, color='k', alpha=0.05)
 
     ax.fill([0, 0, 10, 10], [0, 1, 1, 0], fill=False, hatch='//', color='.5')
     ax.axhline(0.25, linewidth=0.5, color='k', alpha=.5, ls=':')
     ax.axhline(0.5, linewidth=0.5, color='k', alpha=.5, ls=':')
     ax.axhline(0.75, linewidth=0.5, color='k', alpha=.5, ls=':')
     ax.axhline(1.0, linewidth=0.5, color='k', alpha=.5, ls=':')
-    ax.set_ylim(0, 1.01)
+    ax.set_ylim(0, 1.26)
 #    ax.set_xlim(-0.5, n_trial)
 
     

@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# Copyright (c) 2016, Nicolas P. Rougier
+# Distributed under the (new) BSD License.
+# -----------------------------------------------------------------------------
 import numpy as np
 from scipy import stats
 from itertools import combinations
@@ -136,6 +140,23 @@ C4 = Z[np.where(Z[:, 2] == 4)][:, 0]
 H, p_omnibus, Z_pairs, p_corrected, reject = \
     kw_dunn([C0, C1, C2, C3, C4,], [(0,4), (2,4), (3,4)], alpha=0.05)
 
+print("H:", H)
+print("p omnibus:", p_omnibus)
+print("p corrected:", *p_corrected)
+print("rejection:", *reject)
+
+
+Z = np.loadtxt("./experimental-raw-data.txt")
+C0 = Z[np.where(Z[:, 2] == 0)][:, 0]
+C1 = Z[np.where(Z[:, 2] == 1)][:, 0]
+C2 = Z[np.where(Z[:, 2] == 2)][:, 0]
+C3 = Z[np.where(Z[:, 2] == 3)][:, 0]
+C4 = Z[np.where(Z[:, 2] == 4)][:, 0]
+
+H, p_omnibus, Z_pairs, p_corrected, reject = \
+    kw_dunn([C0, C1, C2, C3, C4,], [(0,4), (2,4), (3,4)], alpha=0.05)
+
+print()
 print("H:", H)
 print("p omnibus:", p_omnibus)
 print("p corrected:", *p_corrected)

@@ -11,6 +11,7 @@ def histogram(ax, D0, D1, D2, title, labels, stars):
     D0_end_mean, D0_end_std, D0_end_sem = stats(D0_end)
     D0_mean = (D0_start_mean, D0_end_mean)
     D0_sem = (D0_start_sem, D0_end_sem)
+    D0_std = (D0_start_std, D0_end_std)
 
     D1_start = [np.mean(session[:n]) for session in D1]
     D1_end = [np.mean(session[-n:]) for session in D1]
@@ -18,6 +19,7 @@ def histogram(ax, D0, D1, D2, title, labels, stars):
     D1_end_mean, D1_end_std, D1_end_sem = stats(D1_end)
     D1_mean = (D1_start_mean, D1_end_mean)
     D1_sem = (D1_start_sem, D1_end_sem)
+    D1_std = (D1_start_std, D1_end_std)
 
     D2_start = [np.mean(session[:n]) for session in D2]
     D2_end = [np.mean(session[-n:]) for session in D2]
@@ -25,6 +27,7 @@ def histogram(ax, D0, D1, D2, title, labels, stars):
     D2_end_mean, D2_end_std, D2_end_sem = stats(D2_end)
     D2_mean = (D2_start_mean, D2_end_mean)
     D2_sem = (D2_start_sem, D2_end_sem)
+    D2_std = (D2_start_std, D2_end_std)
 
     ax.xaxis.set_tick_params(size=0)
     ax.yaxis.set_tick_params(width=1)
@@ -35,16 +38,14 @@ def histogram(ax, D0, D1, D2, title, labels, stars):
               'elinewidth': 1, 'ecolor': 'k'}
 
     def plot(X, mean, sigma, color, alpha):
-        plt.bar(X, mean, alpha=alpha, color=color, **bar_kw)
+        plt.bar(X+width/2.0, mean, alpha=alpha, color=color, **bar_kw)
         _, caps, _ = plt.errorbar(X+width/2.0, mean, sigma, **err_kw)
-        for cap in caps:
-            cap.set_markeredgewidth(1)
 
     width = 1
     index = np.array([0, 1])
-    plot(index-width,     D0_mean, D0_sem, '.25', 0.45)
-    plot(index-width+2.5, D1_mean, D1_sem, '.25', 0.45)
-    plot(index-width+5.0, D2_mean, D2_sem, '.25', 0.45)
+    plot(index-width,     D0_mean, D0_std, '.25', 0.45)
+    plot(index-width+2.5, D1_mean, D1_std, '.25', 0.45)
+    plot(index-width+5.0, D2_mean, D2_std, '.25', 0.45)
 
     plt.xlim(-1.5, +6.5)
     plt.xticks([-0.5, 0.0, 0.5,
@@ -59,7 +60,7 @@ def histogram(ax, D0, D1, D2, title, labels, stars):
                 "10 first\ntrials",
                 "\n\n\n%s" % labels[2],
                 "10 last\ntrials"])
-    plt.ylim(0.0, 1.2)
+    plt.ylim(0.0, 1.30)
     plt.ylabel("Ratio of optimum trials")
     plt.yticks([0.00, 0.25, 0.50, 0.75, 1.00])
 
@@ -75,22 +76,15 @@ def histogram(ax, D0, D1, D2, title, labels, stars):
     ax.add_line(lines.Line2D(x+5.0, y, lw=1, color='k', clip_on=False))
 
     # Custom function to draw the diff bars
-    def label_diff(X1, Y1, X2, Y2, Y, text):
-        #plt.plot([X1, X1, X2, X2], [Y1, Y, Y, Y2], color="k")
+    def label_diff(X1, X2, Y, text):
         d = 0.025
-        plt.plot([X1, X1, X2, X2], [Y-d, Y, Y, Y-d], color="k")
+        plt.plot([X1, X1, X2, X2], [Y-d, Y, Y, Y-d], color="k", lw=1)
         plt.text((X1+X2)/2.0, Y-0.015, text, transform=ax.transData,
                  va="bottom", ha="center", fontsize=20)
 
-    label_diff(-0.5, D0_start_mean+D0_start_sem+.05,
-               4.5, D2_start_mean+D2_start_sem+.25,
-               1.1, stars[0])
-    label_diff(2.0, D1_start_mean+D1_start_sem+.05,
-               4.5, D2_start_mean+D2_start_sem+.15,
-               1.0, stars[1])
-    label_diff(3.0, D1_end_mean+D1_end_sem+.05,
-               4.5, D2_start_mean+D2_start_sem+.05,
-               0.9, stars[2])
+    label_diff(-0.5, 4.5, 1.2, stars[0])
+    label_diff(2.0,  4.5, 1.1, stars[1])
+    label_diff(3.0,  4.5, 1.0, stars[2])
 
     plt.title(title)
 
@@ -98,13 +92,6 @@ import scipy.stats
 from stats import stats
 from experimental.data import get as get_experimental
 from theoretical.data import get as get_theoretical
-
-def test(group1, group2):
-    F, p = scipy.stats.kruskal(group1, group2)
-    if   p < 0.0005: return "***", F, p
-    elif p < 0.005:  return "**", F, p
-    elif p < 0.05:   return "*", F, p
-    else:            return "-", F, p
 
 
 fig = plt.figure(figsize=(12, 5), facecolor="w")
@@ -119,9 +106,7 @@ C0 = Z[np.where(Z[:,2]==0)][:,0]
 C2 = Z[np.where(Z[:,2]==2)][:,0]
 C3 = Z[np.where(Z[:,2]==3)][:,0]
 C4 = Z[np.where(Z[:,2]==4)][:,0]
-stars = [result[0] for result in [test(C4, C0),
-                                  test(C4, C2),
-                                  test(C4, C3)]]
+stars = ['*', '*', '*']
 
 histogram(ax, D0, D1, D2, "Experimental results",
           labels = ("Control", "D1 (muscimol)", " D2 (saline)"),
@@ -137,9 +122,8 @@ C0 = Z[np.where(Z[:,2]==0)][:,0]
 C2 = Z[np.where(Z[:,2]==2)][:,0]
 C3 = Z[np.where(Z[:,2]==3)][:,0]
 C4 = Z[np.where(Z[:,2]==4)][:,0]
-stars = [result[0] for result in [test(C4, C0),
-                                  test(C4, C2),
-                                  test(C4, C3)]]
+stars = ['*', '*', '*']
+
 histogram(ax, D0, D1, D2, "Theoretical results",
           labels = ("Control", "D1 (GPi OFF)", " D2 (GPi ON)"),
           stars = stars)

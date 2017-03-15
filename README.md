@@ -20,8 +20,6 @@ $ python setup.py develop
 
 ### Running
 
-Then you can run a single trial:
-
 ```bash
 $ cd experiments
 $ python single-trial.py
@@ -34,4 +32,14 @@ $ cd experiments
 $ python experiment-D1-on-D2-on.py
 $ python experiment-D1-off-D2-on.py
 $ python experiment-D1-on-D2-off.py
+```
+
+### Figures & analysis
+
+```bash
+$ cd experiments/data
+$ python output-raw-data.py
+$ python figure-histograms.py
+$ python figure-trials.py
+$ Rscript analysis.R
 ```

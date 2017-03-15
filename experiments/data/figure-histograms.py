@@ -109,7 +109,7 @@ C4 = Z[np.where(Z[:,2]==4)][:,0]
 stars = ['*', '*', '*']
 
 histogram(ax, D0, D1, D2, "Experimental results",
-          labels = ("Control", "D1 (muscimol)", " D2 (saline)"),
+          labels = ("D0 (control)", "D1 (muscimol)", " D2 (saline)"),
           stars = stars)
 
 D0 = get_theoretical('10', day=0, gpi=1, n_trial=60, key='success')
@@ -125,7 +125,7 @@ C4 = Z[np.where(Z[:,2]==4)][:,0]
 stars = ['*', '*', '*']
 
 histogram(ax, D0, D1, D2, "Theoretical results",
-          labels = ("Control", "D1 (GPi OFF)", " D2 (GPi ON)"),
+          labels = ("D0 (control)", "D1 (GPi OFF)", " D2 (GPi ON)"),
           stars = stars)
 
 plt.tight_layout(pad=0)

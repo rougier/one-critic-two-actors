@@ -31,21 +31,21 @@ def write_data(get, filename):
     
     for session_id, session in enumerate(D0):
         for trial in session[:n]:
-            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_0))
+            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_0))
         for trial in session[-n:]:
-            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_1))
+            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_1))
 
     for session_id, session in enumerate(D1):
         for trial in session[:n]:
-            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_2))
+            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_2))
         for trial in session[-n:]:
-            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_3))
+            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_3))
 
     for session_id, session in enumerate(D2):
         for trial in session[:n]:
-            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_4))
+            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_4))
         for trial in session[-n:]:
-            file.write("%d\t%d\tC%d\n" % (int(trial), session_id, condition_5))
+            file.write("%d\t%d\t%d\n" % (int(trial), session_id, condition_5))
     file.close()
 
 write_data(get_theoretical, "theoretical-raw-data.txt")

@@ -79,11 +79,14 @@ def plot_mean_performance(ax, sessions):
 #    ax.set_xlim(-0.5, n_trial)
 
     
-def figure(D1, D2, label, output):
+def figure(D1, D2, label, letter, output):
 
     plt.figure(figsize=(16, 8), facecolor='w')
 
     ax = subplot(2, 2, 1)
+    ax.text(-0.05, 1, letter, ha="right", va="top",
+            weight="bold", size=24, transform=ax.transAxes)
+
     plot_trials(ax, D1)
     ax.set_xlabel(label[0])
     ax.set_ylabel("Session #")
@@ -92,6 +95,7 @@ def figure(D1, D2, label, output):
     ax.set_xlabel(label[1])
     ax.set_yticks([])
 
+    
     ax = subplot(2, 2, 3)
     plot_mean_performance(ax, D1)
     ax.set_yticks([0.0, 0.25, 0.5, 0.75, 1.0])
@@ -108,17 +112,16 @@ def figure(D1, D2, label, output):
 
 
 
-
 if __name__ == '__main__':
     from experimental.data import get as get_experimental
 
     D1 = get_experimental('01', day=0, gpi=0, n_trial=60, key='success')
     D2 = get_experimental('01', day=1, gpi=1, n_trial=60, key='success')
-    figure(D1, D2, ["D1 (muscimol)", "D2 (saline)"], "experimental-01.pdf")
+    figure(D1, D2, ["C1 (muscimol)", "C2 (saline)"], "C", "experimental-01.pdf")
 
     D1 = get_experimental('10', day=0, gpi=1, n_trial=60, key='success')
     D2 = get_experimental('10', day=1, gpi=0, n_trial=60, key='success')
-    figure(D1, D2, ["D1 (saline)", "D2 (muscimol)"], "experimental-10.pdf")
+    figure(D1, D2, ["C1 (saline)", "C2 (muscimol)"], "", "experimental-10.pdf")
 
     plt.show()
 
@@ -126,14 +129,14 @@ if __name__ == '__main__':
 
     D1 = get_theoretical('01', day=0, gpi=0, n_trial=60, key='success')
     D2 = get_theoretical('01', day=1, gpi=1, n_trial=60, key='success')
-    figure(D1, D2, ["D1 (GPi OFF)", "D2 (GPi ON)"], "theoretical-01.pdf")
+    figure(D1, D2, ["C1 (GPi OFF)", "C2 (GPi ON)"], "D", "theoretical-01.pdf")
 
     D1 = get_theoretical('10', day=0, gpi=1, n_trial=60, key='success')
     D2 = get_theoretical('10', day=1, gpi=0, n_trial=60, key='success')
-    figure(D1, D2, ["D1 (GPi ON)", "D2 (GPi OFF)"], "theoretical-10.pdf")
+    figure(D1, D2, ["C1 (GPi ON)", "C2 (GPi OFF)"], "", "theoretical-10.pdf")
     
     D1 = get_theoretical('11', day=0, gpi=1, n_trial=60, key='success')
     D2 = get_theoretical('11', day=1, gpi=1, n_trial=60, key='success')
-    figure(D1, D2, ["D1 (GPi ON)", "D2 (GPi ON)"], "theoretical-11.pdf")
+    figure(D1, D2, ["C1 (GPi ON)", "C2 (GPi ON)"], "", "theoretical-11.pdf")
 
     plt.show()

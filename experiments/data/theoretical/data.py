@@ -38,8 +38,8 @@ def get(protocol=None, key="success", n_trial=60,
         key = "best"
     elif key == "RT":
         key = "RT"
-    else:
-        raise KeyError("Unknown record key")
+#    else:
+#        raise KeyError("Unknown record key")
 
     sessions = []
     for output, exp in data.items():

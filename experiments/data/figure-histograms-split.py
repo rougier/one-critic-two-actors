@@ -94,12 +94,12 @@ from experimental.data import get as get_experimental
 from theoretical.data import get as get_theoretical
 
 
-fig = plt.figure(figsize=(12, 5), facecolor="w")
+fig = plt.figure(figsize=(8, 5), facecolor="w")
 
 D0 = get_experimental('10', day=0, gpi=1, n_trial=60, key='success')
 D1 = get_experimental('01', day=0, gpi=0, n_trial=60, key='success')
 D2 = get_experimental('01', day=1, gpi=1, n_trial=60, key='success')
-ax = plt.subplot(1, 2, 2)
+ax = plt.subplot(1, 1, 1)
 
 Z = np.loadtxt("./experimental-raw-data.txt")
 C0 = Z[np.where(Z[:,2]==0)][:,0]
@@ -109,15 +109,17 @@ C4 = Z[np.where(Z[:,2]==4)][:,0]
 stars = ['*', '*', '*']
 
 histogram(ax, D0, D1, D2, "", # "Experimental results",
-          labels = ("C0 (control)", "C1 (muscimol)", " C2 (saline)"),
+          labels = ("D0 (control)", "D1 (muscimol)", " D2 (saline)"),
           stars = stars)
-ax.text(-0.05, 1, "B", ha="right", va="top",
-        weight="bold", size=18, transform=ax.transAxes)
+plt.tight_layout(pad=0)
+plt.savefig("histogram-experimental.pdf")
+plt.show()
 
+fig = plt.figure(figsize=(8, 5), facecolor="w")
 D0 = get_theoretical('10', day=0, gpi=1, n_trial=60, key='success')
 D1 = get_theoretical('01', day=0, gpi=0, n_trial=60, key='success')
 D2 = get_theoretical('01', day=1, gpi=1, n_trial=60, key='success')
-ax = plt.subplot(1, 2, 1)
+ax = plt.subplot(1, 1, 1)
 
 Z = np.loadtxt("./theoretical-raw-data.txt")
 C0 = Z[np.where(Z[:,2]==0)][:,0]
@@ -127,11 +129,8 @@ C4 = Z[np.where(Z[:,2]==4)][:,0]
 stars = ['*', '*', '*']
 
 histogram(ax, D0, D1, D2, "", # "Theoretical results",
-          labels = ("C0 (control)", "C1 (GPi OFF)", " C2 (GPi ON)"),
+          labels = ("D0 (control)", "D1 (GPi OFF)", " D2 (GPi ON)"),
           stars = stars)
-ax.text(-0.05, 1, "A", ha="right", va="top",
-        weight="bold", size=18, transform=ax.transAxes)
-
 plt.tight_layout(pad=0)
-plt.savefig("histogram.pdf")
+plt.savefig("histogram-theoretical.pdf")
 plt.show()

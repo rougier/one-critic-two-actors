@@ -135,6 +135,10 @@ def get(protocol=None, key="success", n_trial=60,
     for filename in filenames:
         if key == 'success':
             Z = read(filename, key='good_choice')
+        elif key == 'reward':
+            Z = read(filename, key='reward')
+        elif key == 'cue':
+            Z = read(filename, key='target_choice')
         elif key == 'RT':
             Z1 = read(filename, key='e35')
             Z2 = read(filename, key='e45')

@@ -94,6 +94,7 @@ class Task(object):
                                    ("rwd", float, 4),
                                    ("rnd", float, 1) ] )
         self.records  = np.zeros(n, [("choice",  float, 1),
+                                     ("cue",     float, 1),
                                      ("best",    float, 1),
                                      ("valid",   float, 1),
                                      ("RT",      float, 1),
@@ -189,6 +190,7 @@ class Task(object):
         self.records[self.index]["best"] = best
         self.records[self.index]["valid"] = valid
         self.records[self.index]["choice"] = choice
+        self.records[self.index]["cue"] = cue
         self.records[self.index]["reward"] = reward
         if model is not None:
             self.records[self.index]["value"] = model["value"]

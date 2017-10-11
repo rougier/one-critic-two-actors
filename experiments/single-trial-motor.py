@@ -12,12 +12,21 @@ from model import Model
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
 def plot_freq(ax, ctx, thl, gpi, stn, str, i0, i1, duration, dt, title, xlabel, ylabel):
+
+    start, stop = duration
+    duration = stop-start
     timesteps = np.linspace(0, duration, duration/dt)
-    stn = stn[:duration:dt]
-    str = str[:duration:dt]
-    ctx = ctx[:duration:dt]
-    gpi = gpi[:duration:dt]
-    thl = thl[:duration:dt]
+    #stn = stn[:duration:dt]
+    #str = str[:duration:dt]
+    #ctx = ctx[:duration:dt]
+    #gpi = gpi[:duration:dt]
+    #thl = thl[:duration:dt]
+
+    stn = stn[start:stop:dt]
+    str = str[start:stop:dt]
+    ctx = ctx[start:stop:dt]
+    gpi = gpi[start:stop:dt]
+    thl = thl[start:stop:dt]
 
     fontsize = 8
 
@@ -28,7 +37,7 @@ def plot_freq(ax, ctx, thl, gpi, stn, str, i0, i1, duration, dt, title, xlabel, 
     
     x = np.argwhere((ctx[:,i0] - ctx[:,i1]) > 40)[0] * dt
     ax.text(x, -6, "↑\nDecision", fontsize=8, va="top", ha="center")
-    ax.text(500, -6, "↑\nTrial start", fontsize=8, va="top", ha="center")
+    ax.text(0, -6, "↑\nTrial start", fontsize=8, va="top", ha="center")
     
     ax.plot(timesteps, ctx[:,i1], c=colors[0], ls="--")
     ax.plot(timesteps, ctx[:,i0], c=colors[0])
@@ -64,7 +73,8 @@ def plot_freq(ax, ctx, thl, gpi, stn, str, i0, i1, duration, dt, title, xlabel, 
         ax.set_xlabel("Time (ms)")
     if ylabel:
         ax.set_ylabel("Firing rate (spikes/s)")
-    ax.set_xticks([0,2000])
+    ax.set_xticks([0,duration])
+    ax.set_xticklabels(["","%d" % duration])
     ax.set_ylim(-5,145)
     ax.set_yticks([0,40,80,120])
 
@@ -81,12 +91,27 @@ def plot_raster(ax, ctx, thl, gpi, stn, str, i0, i1, duration, dt, title):
         Y = y*np.ones(len(X))
         ax.scatter(X, Y, s=.5, marker='|', facecolor=color, edgecolor="none")
 
+    start, stop = duration
+    duration = stop-start
     timesteps = np.linspace(0, duration, duration/dt)
-    stn = stn[:duration:dt]
-    str = str[:duration:dt]
-    ctx = ctx[:duration:dt]
-    gpi = gpi[:duration:dt]
-    thl = thl[:duration:dt]
+    #stn = stn[:duration:dt]
+    #str = str[:duration:dt]
+    #ctx = ctx[:duration:dt]
+    #gpi = gpi[:duration:dt]
+    #thl = thl[:duration:dt]
+
+    stn = stn[start:stop:dt]
+    str = str[start:stop:dt]
+    ctx = ctx[start:stop:dt]
+    gpi = gpi[start:stop:dt]
+    thl = thl[start:stop:dt]
+
+#    timesteps = np.linspace(0, duration, duration/dt)
+#    stn = stn[:duration:dt]
+#    str = str[:duration:dt]
+#    ctx = ctx[:duration:dt]
+#    gpi = gpi[:duration:dt]
+#    thl = thl[:duration:dt]
 
     n = 10
     y = 100
@@ -133,7 +158,7 @@ def plot_raster(ax, ctx, thl, gpi, stn, str, i0, i1, duration, dt, title):
 
 
 def setup(task_filename="task.json", model_filename="model.json"):
-    seed = 123
+    seed = 12345
     np.random.seed(seed)
     random.seed(seed)
     model = Model(model_filename)
@@ -164,12 +189,15 @@ def simulate(task, model, loop, gpi=0):
     return ctx, thl, gpi, stn, str, i0, i1
     
 
-
 dt = 10
-duration = 2000
+
+duration = (500, 2000)
+# duration = (0, 4000)
+# duration = 4000
 
 fig = plt.figure(figsize=(6,10))
 
+#task, model = setup("task.json", "model-guthrie-no-warmup.json")
 task, model = setup("task.json", "model-guthrie.json")
 
 ax = plt.subplot(3,1,1)
@@ -178,6 +206,7 @@ plot_freq(ax, ctx, thl, gpi, stn, str, i0, i1, duration, dt,
           "A Motor channel (no cortical competition)", 0, 1)
 plot_raster(ax, ctx, thl, gpi, stn, str, i0, i1, duration, dt, "")
 
+# task, model = setup("task.json", "model-noisy-no-warmup.json")
 task, model = setup("task.json", "model-noisy.json")
 
 ax = plt.subplot(3,1,3)
